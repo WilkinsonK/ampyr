@@ -18,6 +18,4 @@ test_pytests:
 > pytest project/ -l \
 >     --full-trace   \
 >     --durations=0  \
->     --junit-xml=project/tests/ampyr-pytest.xml \
->     --cov --cov-report=xml --cov-branch
-> mv coverage.xml project/tests/ampyr-coverage.xml
+>     --cov --cov-report=xml:cov.xml --cov-branch

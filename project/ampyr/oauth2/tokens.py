@@ -67,7 +67,7 @@ def validate(data: td.OptTokenMetaData, *, scope: td.OptString = None):
         return TokenState.INVALID
 
     data_scope = str(data["scope"])
-    scope      = str(scope or data_scope)
+    scope = str(scope or data_scope)
 
     # Ensures the scope captured in the token
     # data matches the given scope.
@@ -134,8 +134,8 @@ def make_authstring(config: configs.AuthConfig):
     callouts.
     """
 
-    auth = (":".join([
-        config.client_id, config.client_secret])).encode(AUTH_ENCODING)
+    auth = (":".join([config.client_id,
+                      config.client_secret])).encode(AUTH_ENCODING)
     return f"Basic {base64.b64encode(auth).decode(AUTH_ENCODING)}"
 
 
@@ -217,6 +217,5 @@ def scope_is_subset(first: td.OptString, second: td.OptString = None):
     # pattern and returns a set of it's values.
     split = lambda scope: set(EXPECTED_SCOPE_FORMAT.split(scope))
 
-    first_set, second_set = [
-        split(i) for i in (first, second)]
+    first_set, second_set = [split(i) for i in (first, second)]
     return any([first_set <= second_set, second_set <= first_set])

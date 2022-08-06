@@ -25,8 +25,10 @@ from ampyr import cache
 from ampyr.oauth2 import base, configs, hosts, tokens
 
 
-def _aquire_token(flow: base.SimpleOAuth2Flow, key: str, *,
-    factory: ft.OptTokenMetaDataFT = None) -> td.TokenMetaData:
+def _aquire_token(flow: base.SimpleOAuth2Flow,
+                  key: str,
+                  *,
+                  factory: ft.OptTokenMetaDataFT = None) -> td.TokenMetaData:
     """
     Retrieves an access token from the target
     authentication server. This function first
@@ -49,7 +51,8 @@ def _aquire_token(flow: base.SimpleOAuth2Flow, key: str, *,
     if state is tokens.TokenState.EXPIRED and data:
         payload = td.TokenMetaData({
             "refresh_token": data["refresh_token"],
-            "grant_type": "refresh_token"})
+            "grant_type": "refresh_token"
+        })
     elif factory:
         payload = factory()
 
@@ -58,7 +61,7 @@ def _aquire_token(flow: base.SimpleOAuth2Flow, key: str, *,
     data = _request_token(flow, payload)
     if data and "scope" not in data:
         data["scope"] = scope
-    flow.cache_manager.save(key, data) #type: ignore[arg-type]
+    flow.cache_manager.save(key, data)  #type: ignore[arg-type]
 
     return _aquire_token(flow, key, factory=factory)
 
@@ -70,11 +73,10 @@ def _request_token(flow: base.SimpleOAuth2Flow, payload: td.TokenMetaData):
     access.
     """
 
-    response = flow.session.post(
-        flow.url_for_token,
-        data=payload,
-        headers=flow.requests_config.headers,
-        timeout=flow.requests_config.timeouts)
+    response = flow.session.post(flow.url_for_token,
+                                 data=payload,
+                                 headers=flow.requests_config.headers,
+                                 timeout=flow.requests_config.timeouts)
 
     # Test if there was and issue from the
     # callout, handle any subsequent errors.
@@ -83,7 +85,7 @@ def _request_token(flow: base.SimpleOAuth2Flow, payload: td.TokenMetaData):
     except requests.HTTPError as error:
         _handle_http_error(error)
     else:
-        data = td.TokenMetaData(response.json()) #type: ignore[misc]
+        data = td.TokenMetaData(response.json())  #type: ignore[misc]
         tokens.set_expires(data)
         return data
 
@@ -127,7 +129,7 @@ def _normalize_payload(payload: td.MetaData):
     """
 
     cleaned_data = payload.copy()
-    condition    = (lambda o: o != None)
+    condition = (lambda o: o != None)
 
     for key, value in payload.items():
         if condition(value):
@@ -164,8 +166,9 @@ class CredentialsFlow(base.SimpleOAuth2Flow):
     """
 
     def aquire(self):
-        key     = _make_search_key(self.auth_config, "client_credentials")
-        factory = lambda: td.TokenMetaData({"grant_type": "client_credentials"})
+        key = _make_search_key(self.auth_config, "client_credentials")
+        factory = lambda: td.TokenMetaData(
+            {"grant_type": "client_credentials"})
         return _aquire_token(self, key, factory=factory)["access_token"]
 
 
@@ -181,13 +184,9 @@ class AuthorizationFlow(base.SimpleOAuth2Flow):
     interaction.
     """
 
-    oauth_param_keys: tuple[str, ...] = (
-        "client_id",
-        "redirect_uri",
-        "scope",
-        "state",
-        "show_dialogue",
-        "response_type")
+    oauth_param_keys: tuple[str,
+                            ...] = ("client_id", "redirect_uri", "scope",
+                                    "state", "show_dialogue", "response_type")
     """
     Sequence of names expected to be used in an
     oauth token request.
@@ -201,13 +200,15 @@ class AuthorizationFlow(base.SimpleOAuth2Flow):
 
     show_dialogue: bool
 
-    @property #type: ignore[override]
+    @property  #type: ignore[override]
     def url_for_oauth(self):
         params = {
-            k:v for k,v in self.auth_config.asdict().items()
-            if k in self.oauth_param_keys}
+            k: v
+            for k, v in self.auth_config.asdict().items()
+            if k in self.oauth_param_keys
+        }
 
-        params["redirect_uri"]  = self.auth_config.url_for_redirect
+        params["redirect_uri"] = self.auth_config.url_for_redirect
         params["show_dialogue"] = self.show_dialogue
         params["response_type"] = "code"
 
@@ -229,7 +230,8 @@ class AuthorizationFlow(base.SimpleOAuth2Flow):
                 "grant_type": "authorization_code",
                 "code": self.oauth_code,
                 "scope": self.auth_config.scope,
-                "state": self.auth_config.state})
+                "state": self.auth_config.state
+            })
 
         return _aquire_token(self, key, factory=factory)["access_token"]
 
@@ -238,7 +240,7 @@ class AuthorizationFlow(base.SimpleOAuth2Flow):
 
         # Attributes used for browser behavior.
         self.show_dialogue = show_dialogue
-        self.oauth_code    = None
+        self.oauth_code = None
 
 
 class PKCEFlow(base.SimpleOAuth2Flow):
@@ -254,20 +256,16 @@ class PKCEFlow(base.SimpleOAuth2Flow):
     mobile/desktop applications.
     """
 
-    oauth_param_keys: tuple[str, ...] = (
-        "client_id",
-        "redirect_uri",
-        "code_challenge",
-        "scope",
-        "state",
-        "code_challenge_method",
-        "response_type")
+    oauth_param_keys: tuple[str,
+                            ...] = ("client_id", "redirect_uri",
+                                    "code_challenge", "scope", "state",
+                                    "code_challenge_method", "response_type")
     """
     Sequence of names expected to be used in an
     oauth token request.
     """
 
-    oauth_challenge_method: str = "S256" # SHA256
+    oauth_challenge_method: str = "S256"  # SHA256
     """
     Method of encryption used for validating
     token requests.
@@ -279,14 +277,16 @@ class PKCEFlow(base.SimpleOAuth2Flow):
     authentication.
     """
 
-    @property #type: ignore[override]
+    @property  #type: ignore[override]
     def url_for_oauth(self):
         params = {
-            k:v for k,v in self.auth_config.asdict().items()
-            if k in self.oauth_param_keys}
+            k: v
+            for k, v in self.auth_config.asdict().items()
+            if k in self.oauth_param_keys
+        }
 
-        params["redirect_uri"]          = self.auth_config.url_for_redirect
-        params["response_type"]         = "code"
+        params["redirect_uri"] = self.auth_config.url_for_redirect
+        params["response_type"] = "code"
         params["code_challenge_method"] = self.oauth_challenge_method
 
         base = getattr(self, "_url_for_oauth")
@@ -303,17 +303,23 @@ class PKCEFlow(base.SimpleOAuth2Flow):
             if not self.oauth_code:
                 self.oauth_code = hosts.get_user_auth(self)
             return _normalize_payload({
-                "redirect_uri": self.auth_config.url_for_redirect,
-                "grant_type": "authorization_code",
-                "code": self.oauth_code,
-                "client_id": self.auth_config.client_id,
-                "code_verifier": self.auth_config.code_verifier})
+                "redirect_uri":
+                self.auth_config.url_for_redirect,
+                "grant_type":
+                "authorization_code",
+                "code":
+                self.oauth_code,
+                "client_id":
+                self.auth_config.client_id,
+                "code_verifier":
+                self.auth_config.code_verifier
+            })
 
         return _aquire_token(self, key, factory=factory)["access_token"]
 
     def __init__(self, *args, **kwds):
         super().__init__(*args, **kwds)
 
-        self.requests_config.headers.update({
-            "Content-Type": "application/x-www-form-urlencoded"})
+        self.requests_config.headers.update(
+            {"Content-Type": "application/x-www-form-urlencoded"})
         self.oauth_code = None

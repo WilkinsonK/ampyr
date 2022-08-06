@@ -8,7 +8,7 @@ from typing import Any, Callable, Optional
 
 import requests
 
-from ampyr import  protocols as pt, typedefs as td
+from ampyr import protocols as pt, typedefs as td
 
 GenericFT = Callable[[td.GT], td.GT]
 """Generic factory."""
@@ -38,11 +38,11 @@ def basic_passthrough_ft(obj: td.GT, *args, **kwds):
     return obj
 
 
-def generic_make(
-    gt_cls: type[td.GT], *, 
-    gt_factory: OptInstanceFT = None,
-    gt_args: Optional[tuple] = None,
-    gt_kwds: Optional[dict] = None) -> td.GT:
+def generic_make(gt_cls: type[td.GT],
+                 *,
+                 gt_factory: OptInstanceFT = None,
+                 gt_args: Optional[tuple] = None,
+                 gt_kwds: Optional[dict] = None) -> td.GT:
     """
     Construct an instance using the given
     factory.

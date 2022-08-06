@@ -7,7 +7,7 @@ Default filename used for local cache files.
 
 
 def get_cache_path(path: td.OptFilePath = None,
-    *ids: str | None) -> td.FilePath:
+                   *ids: str | None) -> td.FilePath:
     """
     Retrieve the path for some cache file used
     for long-term storage.
@@ -20,7 +20,7 @@ def get_cache_path(path: td.OptFilePath = None,
     # Join the remaining to the filepath.
     ids = tuple(filter(lambda i: i != None, ids))
     if len(ids):
-        path = "-".join([str(path), *ids]) #type: ignore[list-item]
+        path = "-".join([str(path), *ids])  #type: ignore[list-item]
 
     return path
 

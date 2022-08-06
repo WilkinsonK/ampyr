@@ -20,18 +20,18 @@ class AuthConfig(SimpleConfig):
     """
 
     # Strictly required.
-    client_id:     str
+    client_id: str
     client_secret: str
     code_verifier: str
 
     # Required, but not mandatory.
-    client_userid:    td.OptString
+    client_userid: td.OptString
     url_for_redirect: td.OptString
 
     # Optional.
-    code_challenge: td.OptString    = None
-    scope:          td.OptAuthScope = None
-    state:          td.OptString    = None
+    code_challenge: td.OptString = None
+    scope: td.OptAuthScope = None
+    state: td.OptString = None
 
 
 @dataclasses.dataclass(slots=True)
@@ -42,7 +42,7 @@ class RequestsConfig(SimpleConfig):
     """
 
     # Required attributes.
-    headers:  td.RequestHeaders
+    headers: td.RequestHeaders
 
     # Optional.
     timeouts: td.Optional[tuple[float, ...]]

@@ -31,17 +31,16 @@ class SimpleCacheManager(pt.CacheManager[td.GT]):
     with this `CacheManager`.
     """
 
-    def __init__(self, *,
-        serializer: td.Optional[pt.SupportsSerialize] = None,
-        sub_ids: td.Optional[tuple[td.StrOrBytes, ...]] = None):
+    def __init__(self,
+                 *,
+                 serializer: td.Optional[pt.SupportsSerialize] = None,
+                 sub_ids: td.Optional[tuple[td.StrOrBytes, ...]] = None):
         """Construct a new `CacheManager`."""
 
-        self.serializer = (
-            serializer
-            or getattr(self, "serializer", None)
-            or loaders.NullLoader())
+        self.serializer = (serializer or getattr(self, "serializer", None)
+                           or loaders.NullLoader())
 
-        self.sub_ids    = sub_ids or ()
+        self.sub_ids = sub_ids or ()
 
 
 class NullCacheManager(SimpleCacheManager[None]):
@@ -94,15 +93,13 @@ class LocalDataCacheManager(SimpleCacheManager[td.GT]):
         path = self.data_location
         return os.path.exists(path) and os.path.isfile(path)
 
+    def __init__(self,
+                 *,
+                 data_location: td.OptFilePath = None,
+                 serializer: td.Optional[pt.SupportsSerialize] = None,
+                 sub_ids: td.Optional[tuple[td.StrOrBytes, ...]] = None):
 
-    def __init__(self, *,
-        data_location: td.OptFilePath = None,
-        serializer: td.Optional[pt.SupportsSerialize] = None,
-        sub_ids: td.Optional[tuple[td.StrOrBytes, ...]]= None):
-
-        super().__init__(
-            serializer=serializer,
-            sub_ids=sub_ids)
+        super().__init__(serializer=serializer, sub_ids=sub_ids)
         self.data_location = tools.get_cache_path(data_location)
 
 
@@ -153,7 +150,7 @@ def _open_shelf(filepath: str) -> shelve.Shelf[td.StrOrBytes]:
     NOTE: Must close manually.
     """
 
-    return shelve.open(filepath) #type: ignore[return-value]
+    return shelve.open(filepath)  #type: ignore[return-value]
 
 
 class ShelfCacheManager(LocalDataCacheManager[td.GT]):

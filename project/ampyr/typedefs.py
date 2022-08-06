@@ -6,7 +6,7 @@ package.
 import enum
 from os import PathLike
 from pathlib import Path
-from typing import NewType, TypedDict, TypeVar # Keep these separate.
+from typing import NewType, TypedDict, TypeVar  # Keep these separate.
 from typing import Any, Optional, Sequence
 
 from requests import Session
@@ -36,6 +36,7 @@ OptionalGT = Optional[GT]
 IntSuccess = 0
 IntFailure = 1
 
+
 class ReturnState(enum.IntEnum):
     """
     Integer values representing states of
@@ -44,6 +45,7 @@ class ReturnState(enum.IntEnum):
 
     SUCCESS = IntSuccess
     FAILURE = IntFailure
+
 
 # --------------------------------------------- #
 # Strings and Bytes.
@@ -100,11 +102,11 @@ OptMetaData = Optional[MetaData]
 class TokenMetaData(TypedDict, total=False):
     """Data related to Authentication Tokens."""
 
-    access_token:  CharToken
+    access_token: CharToken
     refresh_token: CharToken
 
     grant_type: str
-    scope:      AuthScope
+    scope: AuthScope
 
     expires_in: int
     expires_at: int

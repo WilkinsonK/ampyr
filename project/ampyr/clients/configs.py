@@ -19,7 +19,7 @@ class AuthConfig(SimpleConfig):
     used in the parent `RESTClient` object.
     """
 
-    client_id:     str
+    client_id: str
     client_secret: str
 
     # Optionals.
@@ -34,8 +34,8 @@ class UrlConfig(SimpleConfig):
     """
 
     # Required values.
-    url_for_host:       str
-    url_for_oauth:      str
+    url_for_host: str
+    url_for_oauth: str
     endpoint_for_oauth: str
     endpoint_for_token: str
 

@@ -34,7 +34,8 @@ local server.
 
 SERVER_TEMPLATES = {
     "success": (SERVER_TEMPLATE_ROOT / "oauth_success.html"),
-    "failure": (SERVER_TEMPLATE_ROOT / "oauth_failure.html")}
+    "failure": (SERVER_TEMPLATE_ROOT / "oauth_failure.html")
+}
 """
 Mapping for the appropriate template according
 to the response being sent.
@@ -107,8 +108,8 @@ def _request_user_auth(flow: base.SimpleOAuth2Flow, port: int):
 
     # If failure to obtain an auth_code, throw an
     # OAuth2.0 error
-    raise errors.OAuth2HttpError(
-        "no authentication code was recieved.", status=http.HTTPStatus(401))
+    raise errors.OAuth2HttpError("no authentication code was recieved.",
+                                 status=http.HTTPStatus(401))
 
 
 def _open_auth_server(port: int):
@@ -118,10 +119,10 @@ def _open_auth_server(port: int):
 
     server.allow_reuse_address = True
 
-    server.auth_code       = None
+    server.auth_code = None
     server.auth_token_form = None
-    server.error           = None
-    server.state           = None
+    server.error = None
+    server.state = None
 
     return server
 
@@ -196,7 +197,7 @@ def _parse_server_response(handler: LocalRequestHandler):
     """
 
     result = urllib.parse.urlparse(handler.path)
-    form   = dict(urllib.parse.parse_qsl(result.query))
+    form = dict(urllib.parse.parse_qsl(result.query))
 
     if "error" in form:
         handler.server.error = errors.OAuth2HttpError()
@@ -204,18 +205,16 @@ def _parse_server_response(handler: LocalRequestHandler):
 
     state, code = [form.get(f) for f in SERVER_EXPECTED_FORMFIELDS]
     handler.server.auth_code = code
-    handler.server.state     = state
+    handler.server.state = state
 
 
-def _write_server_response(
-    handler: LocalRequestHandler, status: str, message: str):
+def _write_server_response(handler: LocalRequestHandler, status: str,
+                           message: str):
     """
     Write to the target `LocalRequestHandler`'s
     stream.
     """
 
-    data = (SERVER_TEMPLATES[status]
-        .read_text()
-        .format(status=status)
-        .encode(SERVER_RESPONSE_ENCODING))
+    data = (SERVER_TEMPLATES[status].read_text().format(
+        status=status).encode(SERVER_RESPONSE_ENCODING))
     handler.wfile.write(data)

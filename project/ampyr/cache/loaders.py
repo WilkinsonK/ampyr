@@ -20,8 +20,10 @@ class NullLoader(pt.SupportsSerialize[td.GT]):
         return data
 
 
-def load(serializer: pt.SupportsSerialize[td.GT], data: td.StrOrBytes, *,
-    factory: ft.OptGenericFT[td.GT] = None) -> td.GT:
+def load(serializer: pt.SupportsSerialize[td.GT],
+         data: td.StrOrBytes,
+         *,
+         factory: ft.OptGenericFT[td.GT] = None) -> td.GT:
     """
     Loads raw `data` using some `serializer`.
 
@@ -31,11 +33,13 @@ def load(serializer: pt.SupportsSerialize[td.GT], data: td.StrOrBytes, *,
 
     if not factory:
         factory = ft.basic_passthrough_ft
-    return factory(serializer.loads(data)) #type: ignore[type-var]
+    return factory(serializer.loads(data))  #type: ignore[type-var]
 
 
-def dump(serializer: pt.SupportsSerialize[td.GT], obj: td.GT, *,
-    factory: ft.OptGenericFT = None) -> td.StrOrBytes:
+def dump(serializer: pt.SupportsSerialize[td.GT],
+         obj: td.GT,
+         *,
+         factory: ft.OptGenericFT = None) -> td.StrOrBytes:
     """
     Deconstructs the given `data` into the format
     of the given `serializer`.

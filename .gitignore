@@ -1,7 +1,11 @@
-# Special directories
+# Special files and dirs
+**.env
 .hidden/
+
+# Python PDM related user files
+.pdm.toml
+
+# Python special files and dirs
+.mypy_cache/
 .venv/
 __pycache__/
-
-# python PDM related user files
-.pdm.toml

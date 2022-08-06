@@ -5,7 +5,9 @@ description = "Spotify Web API client engine."
 authors = [
     {name = "Keenan W. Wilkinson", email = "keenanwilkinson@outlook.com"},
 ]
-dependencies = []
+dependencies = [
+    "requests>=2.28.1",
+]
 requires-python = ">=3.10"
 readme = "README.md"
 license = {text = "MIT"}
@@ -23,4 +25,5 @@ dev = [
     "yapf>=0.32.0",
     "pytest>=7.1.2",
     "python-dotenv>=0.20.0",
+    "types-requests>=2.28.8",
 ]

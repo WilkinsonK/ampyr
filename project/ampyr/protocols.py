@@ -9,7 +9,7 @@ from typing import Protocol
 from ampyr import typedefs as td
 
 
-class CacheManager(Protocol[td.GT]):
+class CacheManager(Protocol[td.GT]): #type: ignore[misc]
     """
     Brokers transactions of cached data.
     Primarily for the use of relieving more
@@ -90,7 +90,7 @@ class OAuth2Flow(Protocol):
         """Attempt to retrieve an auth token."""
 
 
-class SupportsSerialize(Protocol[td.GT]):
+class SupportsSerialize(Protocol[td.GT]): #type: ignore[misc]
     """
     An object which can transform data to/from a
     raw state (i.e. a string or byte array) and

@@ -9,5 +9,6 @@
 
 # Python special files and dirs
 .mypy_cache/
+.pytest_cache/
 .venv/
 __pycache__/

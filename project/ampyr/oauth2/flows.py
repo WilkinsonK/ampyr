@@ -21,6 +21,7 @@ import http, urllib.parse as urlparse
 import requests
 
 from ampyr import errors, factories as ft, protocols as pt, typedefs as td
+from ampyr import cache
 from ampyr.oauth2 import base, configs, hosts, tokens
 
 

@@ -9,7 +9,7 @@ from typing import Protocol
 from ampyr import typedefs as td
 
 
-class CacheManager(Protocol[td.GT]): #type: ignore[misc]
+class CacheManager(Protocol[td.GT]):
     """
     Brokers transactions of cached data.
     Primarily for the use of relieving more
@@ -90,7 +90,7 @@ class OAuth2Flow(Protocol):
         """Attempt to retrieve an auth token."""
 
 
-class SupportsSerialize(Protocol[td.GT]): #type: ignore[misc]
+class SupportsSerialize(Protocol[td.GT]):
     """
     An object which can transform data to/from a
     raw state (i.e. a string or byte array) and
@@ -109,6 +109,26 @@ class SupportsSerialize(Protocol[td.GT]): #type: ignore[misc]
         """
         Converts some Python object into some raw
         state data.
+        """
+
+
+class RESTDriver(Protocol):
+    """
+    Responsible for handling internal
+    functionality. Such as rendering URL strings
+    or constructing data payloads.
+    """
+
+    def make_payload(self, data: td.OptRequestHeaders) -> td.RequestHeaders:
+        """
+        Properly constructs a mapping usable by
+        the target RESTful `Web API`.
+        """
+
+    def make_url(self, *, requires_idn: td.Optional[bool]) -> str:
+        """
+        Properly constructs a url path usable by
+        the target RESTful `Web API`.
         """
 
 

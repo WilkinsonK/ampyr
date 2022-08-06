@@ -2,3 +2,6 @@
 .hidden/
 .venv/
 __pycache__/
+
+# python PDM related user files
+.pdm.toml

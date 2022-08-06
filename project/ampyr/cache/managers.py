@@ -165,10 +165,20 @@ class ShelfCacheManager(LocalDataCacheManager[td.GT]):
     def fileexists(self):
         path = self.data_location
 
+        # If is single file instance
+        if os.path.exists(path):
+            return True
+
         # If is single file db instance.
         temp_path = ".".join([path, "db"])
         if os.path.exists(temp_path):
             return True
+
+        for ext in ("", "db"):
+            temp_path = ".".join([path, ext])
+
+            if os.path.exists(temp_path):
+                return True
 
         # shelve module generates multiple files.
         for ext in ("dat", "dir", "bak"):

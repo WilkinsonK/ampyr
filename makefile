@@ -1,11 +1,14 @@
 # Include configuration file.
 include make.conf
 
+.PHONEY: all
+all: format test
 
 .PHONEY: clean
 clean:
 > find project/ -iname '__pycache__' -type d | xargs rm -rf
 > find project/ -iname '.mypy_cache' -type d | xargs rm -rf
+> find project/ -iname '.pytest_cache' -type d | xargs rm -rf
 
 .PHONEY: format
 format:

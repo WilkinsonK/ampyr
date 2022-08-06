@@ -1,6 +1,10 @@
 import os, time
+import tempfile
 
 import dotenv, pytest
+
+from ampyr import cache
+from ampyr.cache.managers import SimpleCacheManager
 
 from ampyr import oauth2
 from ampyr.oauth2.base import SimpleOAuth2Flow
@@ -57,7 +61,7 @@ def oauth_flow_object(
 
 
 @pytest.fixture
-def oauth_flow_object_expired_token(oauth_flow_object: type[SimpleOAuth2Flow]):
+def oauth_flow_object_expired_token(oauth_flow_object: SimpleOAuth2Flow):
     """
     Forces the `OAuth2Flow` object to hold a
     token which is expired.
@@ -72,3 +76,54 @@ def oauth_flow_object_expired_token(oauth_flow_object: type[SimpleOAuth2Flow]):
     oauth_flow_object.cache_manager.save(key, token_data)
 
     yield oauth_flow_object
+
+
+@pytest.fixture(scope="module", params=[
+    cache.MemoryCacheManager,
+    cache.FileCacheManager,
+    cache.ShelfCacheManager])
+def cache_manager_class(request):
+    """
+    Returns one of the different `CacheManager`
+    classes.
+    """
+
+    yield request.param
+
+
+@pytest.fixture(scope="module")
+def cache_manager_kwds():
+    """
+    Returns a mapping of values to pass to an
+    `CacheManager` constructor.
+    """
+
+    kwds = dict()
+
+    yield kwds
+
+
+@pytest.fixture
+def cache_manager_object(
+    cache_manager_class: type[SimpleCacheManager],
+    cache_manager_kwds: dict):
+    """Constructs a `CacheManager` object."""
+
+    olddir = os.curdir
+    with tempfile.TemporaryDirectory() as dir:
+        os.chdir(dir)
+        yield cache_manager_class(**cache_manager_kwds)
+        os.chdir(olddir)
+
+
+@pytest.fixture(scope="module", params=[
+    [314, 4280, 1738],
+    "cacheable_string",
+    {"name": "cacheable_dict", "token": "d3adb33f"}])
+def cacheable_object(request):
+    """
+    Responds with some object that should be
+    cacheable.
+    """
+
+    yield request.param

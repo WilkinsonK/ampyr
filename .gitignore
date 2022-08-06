@@ -1,0 +1,7 @@
+# Special directories
+.hidden/
+.venv/
+__pycache__/
+
+
+

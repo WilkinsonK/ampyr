@@ -9,12 +9,15 @@ clean:
 > find project/ -iname '.mypy_cache' -type d | xargs rm -rf
 
 .PHONEY: test
-test: test_pytests
+test: test_pytests test_coverage
 
 .PHONEY: test_pytests
 test_pytests:
 > @ # Execute in silence.
-> pytest project/ -l -vv \
->     --full-trace   \
->     --durations=0  \
->     --cov --cov-report=xml:cov.xml --cov-branch
+> pytest project/ -l -vv --full-trace --durations=0
+
+.PHONEY: test_coverage
+test_coverage:
+> @ # Execute in silence.
+> pytest project/ --no-summary --no-header -q   \
+>   --cov --cov-report=xml:cov.xml --cov-branch

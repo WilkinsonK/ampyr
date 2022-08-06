@@ -74,8 +74,12 @@ def validate(data: td.OptTokenMetaData, *, scope: td.OptString = None):
     if not scope_is_subset(scope, data_scope):
         return TokenState.INVALID
 
-    if isexpired(data):
+    # Only return EXPIRED if the data retrieved
+    # includes a refresh token.
+    if isexpired(data) and "refresh_token" in data:
         return TokenState.EXPIRED
+    elif isexpired(data):
+        return TokenState.INVALID
 
     return TokenState.ISVALID
 

@@ -1,9 +1,10 @@
-import os
+import os, time
 
 import dotenv, pytest
 
 from ampyr import oauth2
-from ampyr.oauth2 import base
+from ampyr.oauth2.base import SimpleOAuth2Flow
+from ampyr.oauth2.flows import _make_search_key
 
 # Ensure secrets are loaded from '.env' file.
 assert dotenv.load_dotenv(), "could not load environment variables!"
@@ -38,17 +39,36 @@ def oauth_flow_kwds():
         client_userid=os.getenv("TEST_CLIENT_USERID"),
         url_for_oauth=f"{oauth_url}/{os.getenv('TEST_OAUTH_ENDPOINT')}",
         url_for_token=f"{oauth_url}/{os.getenv('TEST_TOKEN_ENDPOINT')}",
-        url_for_redirect="http://localhost:9090")
+        url_for_redirect="http://localhost:9090",
+        scope="user-library-read")
 
     yield kwds
 
 
 @pytest.fixture
 def oauth_flow_object(
-    oauth_flow_class: type[base.SimpleOAuth2Flow],
+    oauth_flow_class: type[SimpleOAuth2Flow],
     oauth_flow_kwds: dict):
     """
     Constructs an `OAuth2Flow` object.
     """
 
     yield oauth_flow_class(**oauth_flow_kwds)
+
+
+@pytest.fixture
+def oauth_flow_object_expired_token(oauth_flow_object: type[SimpleOAuth2Flow]):
+    """
+    Forces the `OAuth2Flow` object to hold a
+    token which is expired.
+    """
+
+    oauth_flow_object.aquire()
+
+    key = _make_search_key(oauth_flow_object.auth_config)
+    token_data = oauth_flow_object.cache_manager.find(key)
+    if token_data:
+        token_data["expires_at"] = int(time.time())
+    oauth_flow_object.cache_manager.save(key, token_data)
+
+    yield oauth_flow_object

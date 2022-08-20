@@ -114,22 +114,39 @@ class SupportsSerialize(Protocol[td.GT]):
 
 class RESTDriver(Protocol):
     """
-    Responsible for handling internal
-    functionality. Such as rendering URL strings
-    or constructing data payloads.
+    Handles the low-level basics of interacting
+    with a RESTful `Web API`.
     """
 
-    def make_payload(self, data: td.OptRequestHeaders) -> td.RequestHeaders:
-        """
-        Properly constructs a mapping usable by
-        the target RESTful `Web API`.
-        """
+    # We implement the below methods to return
+    # `NotImplemented`. This is to allow for
+    # higher level objects to try certain methods
+    # and fail only if they were never overriden
+    # at runtime.
+    def get(self, params: td.OptMetaData, headers: td.OptRequestHeaders) -> td.Any:
+        """Sends a GET http request."""
 
-    def make_url(self, *, requires_idn: td.Optional[bool]) -> str:
-        """
-        Properly constructs a url path usable by
-        the target RESTful `Web API`.
-        """
+        return NotImplemented
+
+    def post(self) -> td.Any:
+        """Sends a `POST` http request."""
+
+        return NotImplemented
+
+    def put(self) -> td.Any:
+        """Sends a `PUT` http request."""
+
+        return NotImplemented
+
+    def patch(self) -> td.Any:
+        """Sends a `PATCH` http request."""
+
+        return NotImplemented
+
+    def delete(self) -> td.Any:
+        """Sends a `DELETE` http request."""
+
+        return NotImplemented
 
 
 class RESTClient(Protocol):

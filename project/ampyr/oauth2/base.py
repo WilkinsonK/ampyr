@@ -93,7 +93,8 @@ class SimpleOAuth2Flow(pt.OAuth2Flow):
                  timeouts: td.Optional[tuple[float, ...]] = None,
                  url_for_oauth: td.OptString = None,
                  url_for_redirect: td.OptString = None,
-                 url_for_token: td.OptString = None):
+                 url_for_token: td.OptString = None,
+                 **kwds):
         """Build some `OAuth2Flow` object."""
 
         # Initialize internal configs.

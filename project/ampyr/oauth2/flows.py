@@ -18,7 +18,7 @@ using RESTful callouts.
 
 import http, urllib.parse as urlparse
 
-import requests
+import httpx
 
 from ampyr import errors, factories as ft, protocols as pt, typedefs as td
 from ampyr import cache
@@ -82,7 +82,7 @@ def _request_token(flow: base.SimpleOAuth2Flow, payload: td.TokenMetaData):
     # callout, handle any subsequent errors.
     try:
         response.raise_for_status()
-    except requests.HTTPError as error:
+    except httpx.HTTPStatusError as error:
         _handle_http_error(error)
     else:
         data = td.TokenMetaData(response.json())  #type: ignore[misc]
@@ -90,7 +90,7 @@ def _request_token(flow: base.SimpleOAuth2Flow, payload: td.TokenMetaData):
         return data
 
 
-def _handle_http_error(error: requests.HTTPError):
+def _handle_http_error(error: httpx.HTTPStatusError):
     """Handle some HTTP exception."""
 
     status = http.HTTPStatus(error.response.status_code)

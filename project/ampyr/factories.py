@@ -6,8 +6,6 @@ used in this package.
 import functools
 from typing import Any, Callable, Optional
 
-import requests
-
 from ampyr import protocols as pt, typedefs as td
 
 GenericFT = Callable[[td.GT], td.GT]
@@ -77,9 +75,9 @@ Factory which constructs a `CacheManager` object.
 OptCacheFT = Optional[CacheFT]
 """Optional `CacheFactory`."""
 
-SessionFT = Callable[[type[requests.Session]], requests.Session]
+SessionFT = Callable[[type[td.Session]], td.Session]
 """
-Factory which constructs a `requests.Session`
+Factory which constructs a `typedefs.Session`
 object.
 """
 

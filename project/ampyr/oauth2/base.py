@@ -42,13 +42,13 @@ class SimpleOAuth2Flow(pt.OAuth2Flow):
 
     session: td.Session
     """
-    A requests session. Used for making RESTful
+    A session object. Used for making RESTful
     transactions.
     """
 
     session_factory: ft.OptSessionFT
     """
-    Constructs new `requests.Session` objects.
+    Constructs new `typedefs.Session` objects.
     """
 
     url_for_oauth: str
@@ -171,7 +171,7 @@ class SimpleOAuth2Flow(pt.OAuth2Flow):
 
     def _new_session(self, *args, **kwds) -> None:
         """
-        Creates a `requests.Session` object using
+        Creates a `typedefs.Session` object using
         this flows internal factory. The new
         session is then assigned to this flow.
         """

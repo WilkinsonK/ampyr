@@ -75,8 +75,8 @@ def _request_token(flow: base.SimpleOAuth2Flow, payload: td.TokenMetaData):
 
     response = flow.session.post(flow.url_for_token,
                                  data=payload,
-                                 headers=flow.requests_config.headers,
-                                 timeout=flow.requests_config.timeouts)
+                                 headers=flow.session_config.headers,
+                                 timeout=flow.session_config.timeouts)
 
     # Test if there was and issue from the
     # callout, handle any subsequent errors.
@@ -320,6 +320,6 @@ class PKCEFlow(base.SimpleOAuth2Flow):
     def __init__(self, *args, **kwds):
         super().__init__(*args, **kwds)
 
-        self.requests_config.headers.update(
+        self.session_config.headers.update(
             {"Content-Type": "application/x-www-form-urlencoded"})
         self.oauth_code = None

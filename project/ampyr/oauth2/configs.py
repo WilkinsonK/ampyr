@@ -35,7 +35,7 @@ class AuthConfig(SimpleConfig):
 
 
 @dataclasses.dataclass(slots=True)
-class RequestsConfig(SimpleConfig):
+class SessionConfig(SimpleConfig):
     """
     Configuration values. Specific to basic
     requests.

@@ -67,11 +67,11 @@ class SimpleOAuth2Flow(pt.OAuth2Flow):
         return self.__auth_config__
 
     @property
-    def requests_config(self):
-        return self.__requests_config__
+    def session_config(self):
+        return self.__session_config__
 
     __auth_config__: configs.AuthConfig
-    __requests_config__: configs.RequestsConfig
+    __session_config__: configs.SessionConfig
 
     def __enter__(self):
         return self
@@ -105,7 +105,7 @@ class SimpleOAuth2Flow(pt.OAuth2Flow):
                               or DEFAULT_OAUTH_URL,
                               scope=tokens.normalize_scope(scope or ""),
                               state=state)
-        self._new_requests_config(headers, timeouts)
+        self._new_session_config(headers, timeouts)
 
         # Cache manager construction components.
         # TODO: define basic cache classes.
@@ -151,7 +151,7 @@ class SimpleOAuth2Flow(pt.OAuth2Flow):
 
         self.cache_manager = inst
 
-    def _new_requests_config(self, *args, **kwds):
+    def _new_session_config(self, *args, **kwds):
         """
         Generates a configuration object for
         basic requests values.
@@ -163,11 +163,11 @@ class SimpleOAuth2Flow(pt.OAuth2Flow):
             headers = tokens.make_headers(self.auth_config)
         args = (headers, ) + args
 
-        inst = ft.generic_make(configs.RequestsConfig,
+        inst = ft.generic_make(configs.SessionConfig,
                                gt_args=args,
                                gt_kwds=kwds)
 
-        self.__requests_config__ = inst
+        self.__session_config__ = inst
 
     def _new_session(self, *args, **kwds) -> None:
         """

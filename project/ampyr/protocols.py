@@ -118,36 +118,6 @@ class RESTDriver(Protocol):
     with a RESTful `Web API`.
     """
 
-    # We implement the below methods to return
-    # `NotImplemented`. This is to allow for
-    # higher level objects to try certain methods
-    # and fail only if they were never overriden
-    # at runtime.
-    def get(self, params: td.OptMetaData, headers: td.OptRequestHeaders) -> td.Any:
-        """Sends a GET http request."""
-
-        return NotImplemented
-
-    def post(self) -> td.Any:
-        """Sends a `POST` http request."""
-
-        return NotImplemented
-
-    def put(self) -> td.Any:
-        """Sends a `PUT` http request."""
-
-        return NotImplemented
-
-    def patch(self) -> td.Any:
-        """Sends a `PATCH` http request."""
-
-        return NotImplemented
-
-    def delete(self) -> td.Any:
-        """Sends a `DELETE` http request."""
-
-        return NotImplemented
-
 
 class RESTClient(Protocol):
     """

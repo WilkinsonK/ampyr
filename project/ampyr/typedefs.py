@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import NewType, TypedDict, TypeVar  # Keep these separate.
 from typing import Any, Optional, Sequence
 
-from requests import Session
+from httpx import Client as Session
 
 # --------------------------------------------- #
 # Generic Types.

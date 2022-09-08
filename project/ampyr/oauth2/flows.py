@@ -74,7 +74,7 @@ def _request_token(flow: base.SimpleOAuth2Flow, payload: td.TokenMetaData):
     """
 
     response = flow.session.post(flow.url_for_token,
-                                 data=payload,
+                                 data=payload, #type: ignore[arg-type]
                                  headers=flow.session_config.headers,
                                  timeout=flow.session_config.timeouts)
 

@@ -25,4 +25,4 @@ test_pytests:
 .PHONEY: test_coverage
 test_coverage:
 > pytest project/ --no-summary --no-header -q   \
->   --cov --cov-report=xml:test-coverage.xml --cov-branch
+>   --cov --cov-report=xml:pytest-coverage.xml --cov-branch

@@ -7,21 +7,21 @@ import http
 from typing import Optional
 
 
-class SpotifyException(Exception):
+class AmpyrException(Exception):
     """
     Raised in the event of any errors related to
-    the `Spotify Web API`.
+    the target `Web API`.
     """
 
 
-class SpotifyHttpError(SpotifyException):
+class AmpyrHttpError(AmpyrException):
     """
     Raised in the event of any HTTP related
-    errors from the `Spotify Web API`.
+    errors from the target `Web API`.
     """
 
     status: http.HTTPStatus = http.HTTPStatus(500)
-    """Response code from `Spotify Web API`."""
+    """Response code from target `Web API`."""
 
     def __init__(self, *values, status: Optional[http.HTTPStatus] = None):
         super().__init__(self, *values)
@@ -34,7 +34,7 @@ class SpotifyHttpError(SpotifyException):
         return "{}: {}".format(self.status.value, super().__str__())
 
 
-class SpotifyUnauthorizedError(SpotifyHttpError):
+class AmpyrUnauthorizedError(AmpyrHttpError):
     """
     Raised in the event of some transaction is
     attempted outside what the client is allowed.
@@ -43,7 +43,7 @@ class SpotifyUnauthorizedError(SpotifyHttpError):
     status: http.HTTPStatus = http.HTTPStatus(401)
 
 
-class SpotifyNotFoundError(SpotifyHttpError):
+class AmpyrNotFoundError(AmpyrHttpError):
     """
     Raised in the event of some transaction
     fails because a resource could not be found.
@@ -52,16 +52,16 @@ class SpotifyNotFoundError(SpotifyHttpError):
     status: http.HTTPStatus = http.HTTPStatus(404)
 
 
-class SpotifyInternalError(SpotifyHttpError):
+class AmpyrInternalError(AmpyrHttpError):
     """
-    Raised in the event the `Spotify Web API`
+    Raised in the event the target `Web API`
     fails internally.
     """
 
     status: http.HTTPStatus = http.HTTPStatus(500)
 
 
-class SpotifyNotImplementedError(SpotifyHttpError):
+class AmpyrNotImplementedError(AmpyrHttpError):
     """
     Raised in the event of some transaction
     failing because the target does not support
@@ -78,7 +78,7 @@ class OAuth2Exception(Exception):
     """
 
 
-class OAuth2HttpError(OAuth2Exception, SpotifyHttpError):
+class OAuth2HttpError(OAuth2Exception, AmpyrHttpError):
     """
     Raised in the event of any errors related to
     `OAuth2.0` and HTTP events.

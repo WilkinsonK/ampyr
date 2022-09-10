@@ -20,7 +20,10 @@ test: test_pytests test_coverage
 
 .PHONEY: test_pytests
 test_pytests:
-> pytest project/ -l -vv --full-trace --durations=0
+> pytest project/ -l -vv --full-trace \
+>   --durations=0 --junit-xml=pytest-results.xml
+> genbadge tests -i pytest-results.xml \
+>   -o project/assets/pytest-results.svg
 
 .PHONEY: test_coverage
 test_coverage:

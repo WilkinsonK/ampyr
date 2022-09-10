@@ -118,9 +118,27 @@ class RESTDriver(Protocol):
     with a RESTful `Web API`.
     """
 
+    @abstractmethod
+    def build_authflow(self):
+        """
+        Creates a new `OAuth2Flow` instance based
+        on parameters given to the driver.
+        """
+
 
 class RESTClient(Protocol):
     """
     Broker object for making calls to the target
     RESTful `Web API`.
     """
+
+    # The below should be implemented at the base
+    # or 'Simple' level. Still marking as
+    # abstract to enforce it's definition in
+    # source.
+    @abstractmethod
+    def request_token(self):
+        """
+        Requests the `OAuth2.0` token used to
+        access the target API.
+        """

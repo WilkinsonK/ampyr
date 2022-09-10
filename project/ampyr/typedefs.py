@@ -6,7 +6,7 @@ package.
 import enum
 from os import PathLike
 from pathlib import Path
-from typing import NewType, TypedDict, TypeVar  # Keep these separate.
+from typing import ClassVar, NewType, TypedDict, TypeVar  # Keep these separate.
 from typing import Any, Optional, Sequence
 
 from httpx import Client as Session

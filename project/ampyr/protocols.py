@@ -118,8 +118,16 @@ class RESTDriver(Protocol):
     with a RESTful `Web API`.
     """
 
+    # Methods defined below in this protocol
+    # should be treated as hooks that are then
+    # used by internal methods through higher
+    # objects.
+    #
+    # In other words, for every abstract method,
+    # there will be a mirror method defined in
+    # the basic driver which calls these hooks.
     @abstractmethod
-    def build_authflow(self):
+    def build_authflow(self) -> OAuth2Flow:
         """
         Creates a new `OAuth2Flow` instance based
         on parameters given to the driver.

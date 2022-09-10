@@ -26,3 +26,5 @@ test_pytests:
 test_coverage:
 > pytest project/ --no-summary --no-header -q   \
 >   --cov --cov-report=xml:pytest-coverage.xml --cov-branch
+> genbadge coverage -i pytest-coverage.xml \
+>   -o project/assets/pytest-coverage.svg

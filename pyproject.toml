@@ -7,6 +7,7 @@ authors = [
 ]
 dependencies = [
     "httpx>=0.23.0",
+    "genbadge[coverage]>=1.1.0",
 ]
 requires-python = ">=3.10"
 readme = "README.md"

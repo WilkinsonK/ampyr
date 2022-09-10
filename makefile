@@ -22,8 +22,8 @@ test: test_pytests test_coverage
 test_pytests:
 > pytest project/ -l -vv --full-trace \
 >   --durations=0 --junit-xml=pytest-results.xml
-> genbadge tests -i pytest-results.xml \
->   -o project/assets/pytest-results.svg
+> genbadge tests -t 80.00 \
+>   -i pytest-results.xml -o project/assets/pytest-results.svg
 
 .PHONEY: test_coverage
 test_coverage:

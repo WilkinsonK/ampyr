@@ -1,5 +1,6 @@
 # Special files and dirs
-**-coverage.xml
+pytest-coverage.xml
+pytest-results.xml
 **.coverage
 **.env
 .hidden/

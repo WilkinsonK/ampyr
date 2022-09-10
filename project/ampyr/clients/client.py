@@ -73,11 +73,6 @@ class BasicRESTDriver(pt.RESTDriver):
 
         return oauth2.NullFlow(*args, **kwds)
 
-    def _build_authflow(self): # This might be redundant.
-                               # Optionally, we might
-                               # move to simple client instead.
-        return self.build_authflow()
-
 
 # Labeling the below as 'Base' because we need to
 # define some pre-subclass initialization
@@ -114,3 +109,6 @@ class SimpleRESTClient(BaseRESTClient, driver=BasicRESTDriver):
 
     Warning: Not meant to be used directly.
     """
+
+    def _build_authflow(self):
+        return self.__driver__.build_authflow()

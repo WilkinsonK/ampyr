@@ -7,7 +7,6 @@ authors = [
 ]
 dependencies = [
     "httpx>=0.23.0",
-    "genbadge[coverage]>=1.1.0",
 ]
 requires-python = ">=3.10"
 readme = "README.md"
@@ -28,4 +27,5 @@ dev = [
     "python-dotenv>=0.20.0",
     "pytest-cov>=3.0.0",
     "toml>=0.10.2",
+    "genbadge[coverage]>=1.1.0",
 ]

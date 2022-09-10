@@ -269,7 +269,7 @@ summary = "A formatter for Python code."
 
 [metadata]
 lock_version = "4.0"
-content_hash = "sha256:404dd1cb4c53c28c5811da684b40a3fbfd274f2abf383c6ac51a92828c98dfdc"
+content_hash = "sha256:577654e6b00d99774f8ee8233ea0cd096b355b930403b35fca2668e882c9b379"
 
 [metadata.files]
 "anyio 3.6.1" = [

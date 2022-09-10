@@ -1,5 +1,4 @@
 # Special files and dirs
-**-coverage.xml
 **.coverage
 **.env
 .hidden/

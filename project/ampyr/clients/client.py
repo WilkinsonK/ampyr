@@ -21,10 +21,18 @@ class BaseRESTClient(pt.RESTClient):
     """
 
     __driver_cls__: type[pt.RESTDriver]
-    __driver__:     pt.RESTDriver
+    __driver__: pt.RESTDriver
     """
     Handles the low-level basics of interacting
     with a RESTful `Web API`.
+    """
+
+    __authflow__: pt.OAuth2Flow
+    """
+    Represents an Authentication Flow procedure
+    defined by `OAuth2.0`. This object is
+    responsible for aquiring an authentication
+    token.
     """
 
     def __init_subclass__(cls, *, driver: type[pt.RESTDriver] = None):
@@ -43,5 +51,26 @@ class SimpleRESTClient(BaseRESTClient, driver=drivers.BasicRESTDriver):
     Warning: Not meant to be used directly.
     """
 
+    def request_token(self):
+        return self.__authflow__.aquire()
+
     def _build_authflow(self):
-        return self.__driver__.build_authflow()
+        self.__authflow__ = self.__driver__.build_authflow()
+
+    def _build_driver(self, client_id: str, client_secret: str,
+                      client_userid: td.OptString,
+                      client_scope: td.OptAuthScope):
+
+        args = (client_id, client_secret, client_userid, client_scope)
+        self.__driver__ = self.__driver_cls__(*args)
+
+    def __init__(self,
+                 client_id: str,
+                 client_secret: str,
+                 client_userid: td.OptString = None,
+                 client_scope: td.OptAuthScope = None):
+        """Construct a `RESTClient` object."""
+
+        self._build_driver(client_id, client_secret, client_userid,
+                           client_scope)
+        self._build_authflow()

@@ -118,6 +118,12 @@ class RESTDriver(Protocol):
     with a RESTful `Web API`.
     """
 
+    requires_oauth: td.ClassVar[bool] = False
+    """
+    Determines whether or not requests sent to
+    the host requires an `OAuth2.0` token.
+    """
+
     # Methods defined below in this protocol
     # should be treated as hooks that are then
     # used by internal methods through higher
@@ -145,7 +151,7 @@ class RESTClient(Protocol):
     # abstract to enforce it's definition in
     # source.
     @abstractmethod
-    def request_token(self):
+    def request_token(self) -> td.CharToken:
         """
         Requests the `OAuth2.0` token used to
         access the target API.

@@ -72,10 +72,11 @@ def _request_token(flow: base.SimpleOAuth2Flow, payload: td.TokenMetaData):
     access.
     """
 
-    response = flow.session.post(flow.url_for_token,
-                                 data=payload, #type: ignore[arg-type]
-                                 headers=flow.session_config.headers,
-                                 timeout=flow.session_config.timeouts)
+    response = flow.session.post(
+        flow.url_for_token,
+        data=payload,  #type: ignore[arg-type]
+        headers=flow.session_config.headers,
+        timeout=flow.session_config.timeouts)
 
     # Test if there was and issue from the
     # callout, handle any subsequent errors.

@@ -1,4 +1,6 @@
-from ampyr import errors, protocols as pt, typedefs as td
+import functools, inspect
+
+from ampyr import factories as ft, protocols as pt, typedefs as td
 
 DEFAULT_CACHE_PATH = ".cache"
 """
@@ -59,3 +61,38 @@ def split_keypair(join_char: str, keypair: str):
     """
 
     return keypair.split(join_char, maxsplit=1)
+
+
+def cachemethod(func: ft.Callable[[pt.HasCacheHandler], td.GT]):
+    """
+    Wraps the target method in such a way that
+    it can cache its callouts. Callouts will only
+    be cached if there is a `cache_mangager`
+    available.
+    """
+
+    @functools.wraps(func)
+    def inner(*args, **kwds):
+        signature  = parse_signature(func, *args, **kwds)
+        self, args = parse_cache_args(*args)
+
+        if (data := self.cache_manager.find(signature)):
+            return data
+        else:
+            data = func(self, *args, **kwds)
+            return self.cache_manager.save(signature, data)
+
+    def parse_cache_args(self: pt.HasCacheHandler, *args):
+        return self, args
+
+    def parse_signature(method: ft.Callable, *args, **kwds):
+        callargs = inspect.getcallargs(method, *args, **kwds)
+
+        # Ensure signature is not unique to a parent
+        # instance.
+        if "self" in callargs:
+            callargs["self"] = type(callargs["self"])
+
+        return ", ".join(["{}: {}".format(k,v) for k,v in callargs.items()])
+
+    return inner

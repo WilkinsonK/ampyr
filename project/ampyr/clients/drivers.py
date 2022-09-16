@@ -1,7 +1,7 @@
 """Describes API driver mechanics."""
 
 from ampyr import factories as ft, protocols as pt, typedefs as td
-from ampyr import oauth2
+from ampyr import oauth2, cache
 
 
 # Labeling the below as 'Basic' because we want
@@ -12,6 +12,9 @@ from ampyr import oauth2
 # Library users can define their own edge case
 # drivers if necessary.
 class BasicRESTDriver(pt.RESTDriver):
+
+    cache_manager: td.ClassVar[pt.CacheManager] = cache.NullCacheManager()
+    """Brokers data to/from some cache."""
 
     authflow_cls: td.ClassVar[type[pt.OAuth2Flow]] = oauth2.NullFlow
     """
@@ -72,6 +75,10 @@ class BasicRESTDriver(pt.RESTDriver):
         }
 
         return self.authflow_cls(*args, **kwds)
+
+    @cache.cachemethod
+    def send(self):
+        return 42
 
     def __init__(self,
                  client_id: str,

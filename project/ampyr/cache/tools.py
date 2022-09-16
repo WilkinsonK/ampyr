@@ -73,7 +73,7 @@ def cachemethod(func: ft.Callable[[pt.HasCacheHandler], td.GT]):
 
     @functools.wraps(func)
     def inner(*args, **kwds):
-        signature  = parse_signature(func, *args, **kwds)
+        signature = parse_signature(func, args, kwds)
         self, args = parse_cache_args(*args)
 
         if (data := self.cache_manager.find(signature)):
@@ -85,7 +85,7 @@ def cachemethod(func: ft.Callable[[pt.HasCacheHandler], td.GT]):
     def parse_cache_args(self: pt.HasCacheHandler, *args):
         return self, args
 
-    def parse_signature(method: ft.Callable, *args, **kwds):
+    def parse_signature(method: ft.Callable, args, kwds):
         callargs = inspect.getcallargs(method, *args, **kwds)
 
         # Ensure signature is not unique to a parent
@@ -93,6 +93,6 @@ def cachemethod(func: ft.Callable[[pt.HasCacheHandler], td.GT]):
         if "self" in callargs:
             callargs["self"] = type(callargs["self"])
 
-        return ", ".join(["{}: {}".format(k,v) for k,v in callargs.items()])
+        return ", ".join(["{}: {}".format(k, v) for k, v in callargs.items()])
 
     return inner

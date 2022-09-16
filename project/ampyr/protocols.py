@@ -139,6 +139,19 @@ class RESTDriver(Protocol):
         on parameters given to the driver.
         """
 
+    @abstractmethod
+    def send(self,
+             method: str,
+             uri: str,
+             *,
+             headers: td.OptRequestHeaders = None,
+             params: td.OptMetaData = None,
+             timeouts: td.Optional[tuple[float]] | tuple[float, float] = None):
+        """
+        Sends a request to the driver's target
+        host.
+        """
+
 
 class RESTClient(Protocol):
     """

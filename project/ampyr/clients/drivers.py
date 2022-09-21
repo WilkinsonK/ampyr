@@ -4,19 +4,18 @@ from ampyr import factories as ft, protocols as pt, typedefs as td
 from ampyr import oauth2, cache
 
 
-# Labeling the below as 'Basic' because we want
-# to allow for this object-- in particular-- to
-# be in use. Generally speaking, this object
-# should be a 'catch-all' RESTDriver.
-#
-# Library users can define their own edge case
-# drivers if necessary.
-class BasicRESTDriver(pt.RESTDriver):
+class BaseRESTDriver(pt.RESTDriver):
+    """
+    Handles basic meta behavior for subsequent
+    classes and subclasses.
 
-    cache_manager: td.ClassVar[pt.CacheManager] = cache.NullCacheManager()
+    Warning: Not meant to be used directly.
+    """
+
+    cache_manager: td.ClassVar[pt.CacheManager]
     """Brokers data to/from some cache."""
 
-    authflow_cls: td.ClassVar[type[pt.OAuth2Flow]] = oauth2.NullFlow
+    authflow_cls: td.ClassVar[type[pt.OAuth2Flow]]
     """
     Authorization flow object used to aquire
     access tokens.
@@ -59,6 +58,23 @@ class BasicRESTDriver(pt.RESTDriver):
     `Web API`.
     """
 
+    __authflow: pt.OAuth2Flow
+
+    # Determines whether or not requests sent to
+    # the host requires an `OAuth2.0` token.
+    __requires_oauth: td.ClassVar[bool]
+
+    @property
+    def authflow(self):
+        """
+        Represents an Authentication Flow
+        procedure defined by `OAuth2.0`. This
+        object is responsible for aquiring an
+        authentication token.
+        """
+
+        return self.__authflow
+
     # NOTE: this is to be the DEFAULT behavior.
     # When a user interacts with this class, they
     # should be encouraged to override this class
@@ -76,9 +92,19 @@ class BasicRESTDriver(pt.RESTDriver):
 
         return self.authflow_cls(*args, **kwds)
 
+    def prepare_send_headers(self):
+        return td.RequestHeaders()
+
+    def prepare_send_params(self, params: td.OptMetaData):
+        return params
+
     @cache.cachemethod
     def send(self):
-        return 42
+        ...
+
+    @classmethod
+    def build_cache_manager(cls):
+        return cache.NullCacheManager()
 
     def __init__(self,
                  client_id: str,
@@ -91,3 +117,28 @@ class BasicRESTDriver(pt.RESTDriver):
         self.client_secret = client_secret
         self.client_userid = client_userid
         self.client_scope = client_scope
+
+        self.__authflow = self.build_authflow()
+
+    def __init_subclass__(cls, *, authflow_cls: type[pt.OAuth2Flow] = None):
+        # Validate required ClassVar attributes.
+
+        cls.authflow_cls = authflow_cls or oauth2.NullFlow
+        cls.__requires_oauth = not isinstance(cls.authflow_cls,
+                                              oauth2.NullFlow)
+
+        cls.cache_manager = cls.build_cache_manager()
+
+
+# Labeling the below as 'Basic' because we want
+# to allow for this object-- in particular-- to
+# be in use. Generally speaking, this object
+# should be a 'catch-all' RESTDriver.
+#
+# Library users can define their own edge case
+# drivers if necessary.
+class BasicRESTDriver(BaseRESTDriver):
+    """
+    Basic implementation. Defines constructor for
+    all subsequent derivatives.
+    """

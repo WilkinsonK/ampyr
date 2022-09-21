@@ -118,12 +118,6 @@ class RESTDriver(Protocol):
     with a RESTful `Web API`.
     """
 
-    requires_oauth: td.ClassVar[bool] = False
-    """
-    Determines whether or not requests sent to
-    the host requires an `OAuth2.0` token.
-    """
-
     # Methods defined below in this protocol
     # should be treated as hooks that are then
     # used by internal methods through higher
@@ -140,17 +134,35 @@ class RESTDriver(Protocol):
         """
 
     @abstractmethod
+    def prepare_send_headers(self) -> td.RequestHeaders:
+        """
+        Prepares the headers applied to a REST
+        call sent to the target `Web API`.
+        """
+
+    @abstractmethod
+    def prepare_send_params(self, params: td.OptMetaData) -> td.OptMetaData:
+        """
+        Prepares the parameters applied to a
+        REST call sent to the target `Web API`.
+        """
+
+    @abstractmethod
     def send(self,
              method: str,
              uri: str,
              *,
-             headers: td.OptRequestHeaders = None,
              params: td.OptMetaData = None,
-             timeouts: td.Optional[tuple[float]] | tuple[float, float] = None):
+             timeouts: td.Optional[td.Sequence[float]] = None) -> td.Response:
         """
         Sends a request to the driver's target
         host.
         """
+
+    @classmethod
+    @abstractmethod
+    def build_cache_manager(cls) -> CacheManager:
+        """Create a `CacheManager` object."""
 
 
 class RESTClient(Protocol):
@@ -158,14 +170,3 @@ class RESTClient(Protocol):
     Broker object for making calls to the target
     RESTful `Web API`.
     """
-
-    # The below should be implemented at the base
-    # or 'Simple' level. Still marking as
-    # abstract to enforce it's definition in
-    # source.
-    @abstractmethod
-    def request_token(self) -> td.CharToken:
-        """
-        Requests the `OAuth2.0` token used to
-        access the target API.
-        """

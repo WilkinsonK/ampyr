@@ -2,6 +2,10 @@ import functools, inspect
 
 from ampyr import factories as ft, protocols as pt, typedefs as td
 
+# Temporary Paramspec. Must be local in order to
+# function properly.
+_PS = td.ParamSpec("_PS")
+
 DEFAULT_CACHE_PATH = ".cache"
 """
 Default filename used for local cache files.
@@ -63,7 +67,7 @@ def split_keypair(join_char: str, keypair: str):
     return keypair.split(join_char, maxsplit=1)
 
 
-def cachemethod(func: ft.Callable[[pt.HasCacheHandler], td.GT]):
+def cachemethod(func: ft.Callable[_PS, td.GT]) -> ft.Callable[_PS, td.GT]:
     """
     Wraps the target method in such a way that
     it can cache its callouts. Callouts will only
@@ -72,27 +76,29 @@ def cachemethod(func: ft.Callable[[pt.HasCacheHandler], td.GT]):
     """
 
     @functools.wraps(func)
-    def inner(*args, **kwds):
-        signature = parse_signature(func, args, kwds)
-        self, args = parse_cache_args(*args)
+    def inner(*args: _PS.args, **kwds: _PS.kwargs):
+        signature = _parse_signature(func, args, kwds)
+        self, args = _parse_cache_args(*args)  #type: ignore[assignment]
 
         if (data := self.cache_manager.find(signature)):
             return data
         else:
-            data = func(self, *args, **kwds)
+            data = func(self, *args, **kwds)  #type: ignore[arg-type]
             return self.cache_manager.save(signature, data)
 
-    def parse_cache_args(self: pt.HasCacheHandler, *args):
-        return self, args
-
-    def parse_signature(method: ft.Callable, args, kwds):
-        callargs = inspect.getcallargs(method, *args, **kwds)
-
-        # Ensure signature is not unique to a parent
-        # instance.
-        if "self" in callargs:
-            callargs["self"] = type(callargs["self"])
-
-        return ", ".join(["{}: {}".format(k, v) for k, v in callargs.items()])
-
     return inner
+
+
+def _parse_cache_args(self, *args) -> tuple[pt.HasCacheHandler, tuple]:
+    return self, args
+
+
+def _parse_signature(method: ft.Callable, args, kwds) -> str:
+    callargs = inspect.getcallargs(method, *args, **kwds)
+
+    # Ensure signature is not unique to a parent
+    # instance.
+    if "self" in callargs:
+        callargs["self"] = type(callargs["self"])
+
+    return ", ".join(["{}: {}".format(k, v) for k, v in callargs.items()])
